@@ -43,7 +43,7 @@ This dataset is available in kaggle - https://www.kaggle.com/datasets/wittmannf/
 
 ## Technologies Used
 
-- **Python 3**
+- **Python 3 (Jupyter Notebook)**
 - **Pandas** for data manipulation
 - **NumPy** for numerical operations
 - **Matplotlib** and **Seaborn** for data visualization
