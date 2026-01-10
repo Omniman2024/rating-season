@@ -89,7 +89,6 @@ URL for the website I created - https://rating-season-bwahpwwjo9ala2g5bcblyd.str
 
 - **Python 3 (Jupyter Notebook)**
 - **Pandas** for data manipulation
-- **NumPy** for numerical operations
 - **Matplotlib** and **Seaborn** for data visualization
 - **Streamlit** for web dashboard
 
