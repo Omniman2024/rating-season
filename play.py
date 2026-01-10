@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import io  
 
 st.title("IMDB TV Shows Analysis")
 
@@ -16,6 +17,12 @@ def load_and_prep_data():
         return None
 
 df = load_and_prep_data()
+
+def get_jpeg_buffer(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="jpeg", dpi=300, bbox_inches='tight')
+    buf.seek(0)
+    return buf
 
 if df is not None:
     df = df[df['season'] != 'Unknown']
@@ -61,6 +68,14 @@ if df is not None:
         ax.grid(True)
         st.pyplot(fig)
 
+        fn = "rating_trends.jpeg"
+        st.download_button(
+            label="Download Chart as JPEG",
+            data=get_jpeg_buffer(fig),
+            file_name=fn,
+            mime="image/jpeg"
+        )
+
     elif page == "Histogram (Distributions)":
         st.header("Rating Distributions")
         st.caption("How common are high or low ratings?")
@@ -73,7 +88,17 @@ if df is not None:
         ax.set_title("Distribution of Episode Ratings")
         ax.set_xlabel("Rating")
         st.pyplot(fig)
+        
+        fn = "rating_distribution.jpeg"
+        st.download_button(
+            label="Download Histogram as JPEG",
+            data=get_jpeg_buffer(fig),
+            file_name=fn,
+            mime="image/jpeg"
+        )
+        
         st.info("The curve (KDE) represents the probability density of the ratings.")
+
     elif page == "Boxplot (Variability)":
         st.header("Season-wise Variability")
         st.caption("Which seasons were consistent? Which had the best/worst outliers?")
@@ -87,12 +112,29 @@ if df is not None:
         ax.set_xlabel("Season")
         ax.set_ylabel("Episode Rating")
         st.pyplot(fig)
+        
+        fn = "season_variability.jpeg"
+        st.download_button(
+            label="Download Boxplot as JPEG",
+            data=get_jpeg_buffer(fig),
+            file_name=fn,
+            mime="image/jpeg"
+        )
+
         st.info("Dots represent outlier episodes that were significantly better or worse than the season average.")
 
     elif page == "Raw Data":
         st.header("Raw Dataset")
         st.caption(f"Showing data for {len(plot_data['title'].unique())} shows.")
         st.dataframe(plot_data)
+        
+        csv = plot_data.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download Data as CSV",
+            data=csv,
+            file_name='filtered_imdb_data.csv',
+            mime='text/csv',
+        )
 
 else:
     st.error("Data file not found. Please place 'imdb_top_250_series_episode_ratings(1).csv' in the same folder.")
